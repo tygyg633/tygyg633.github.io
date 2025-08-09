@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>火柴人追逐</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB 60%, #4682B4 100%);
+        }
+        
+        #street {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30%;
+            background: #2F4F4F;
+        }
+        
+        .building {
+            position: absolute;
+            bottom: 30%;
+            background: #696969;
+            width: 80px;
+        }
+        
+        .chaser {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            width: 50px;
+            height: 80px;
+        }
+        
+        .runner {
+            position: absolute;
+            bottom: 30%;
+            left: 30%;
+            width: 50px;
+            height: 80px;
+        }
+        
+        #message {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            font-weight: bold;
+            color: #FF0000;
+            text-shadow: 2px 2px 4px #000000;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="message">张艾轩来了，张益轩快跑</div>
+    <div id="street"></div>
+    
+    <script>
+        // 创建建筑物
+        function createBuildings() {
+            const buildingCount = 10;
+            const buildingWidth = 80;
+            const maxHeight = 200;
+            
+            for (let i = 0; i < buildingCount; i++) {
+                const building = document.createElement('div');
+                building.className = 'building';
+                
+                // 随机位置和高度
+                const left = Math.random() * (window.innerWidth - buildingWidth);
+                const height = 50 + Math.random() * maxHeight;
+                
+                building.style.left = left + 'px';
+                building.style.height = height + 'px';
+                
+                // 添加窗户
+                const windowCount = Math.floor(height / 40) * 2;
+                for (let j = 0; j < windowCount; j++) {
+                    const window = document.createElement('div');
+                    window.style.position = 'absolute';
+                    window.style.width = '10px';
+                    window.style.height = '15px';
+                    window.style.background = '#FFD700';
+                    
+                    const row = Math.floor(j / 2);
+                    const col = j % 2;
+                    
+                    window.style.left = (15 + col * 30) + 'px';
+                    window.style.top = (10 + row * 25) + 'px';
+                    
+                    building.appendChild(window);
+                }
+                
+                document.body.appendChild(building);
+            }
+        }
+        
+        // 创建火柴人
+        function createStickFigure(x, y, color) {
+            const figure = document.createElement('div');
+            figure.style.position = 'absolute';
+            figure.style.left = x + 'px';
+            figure.style.bottom = y + 'px';
+            
+            // 头部
+            const head = document.createElement('div');
+            head.style.position = 'absolute';
+            head.style.width = '20px';
+            head.style.height = '20px';
+            head.style.borderRadius = '50%';
+            head.style.background = color;
+            head.style.left = '15px';
+            head.style.top = '0';
+            figure.appendChild(head);
+            
+            // 身体
+            const body = document.createElement('div');
+            body.style.position = 'absolute';
+            body.style.width = '5px';
+            body.style.height = '30px';
+            body.style.background = color;
+            body.style.left = '22.5px';
+            body.style.top = '20px';
+            figure.appendChild(body);
+            
+            // 手臂
+            const arm1 = document.createElement('div');
+            arm1.style.position = 'absolute';
+            arm1.style.width = '20px';
+            arm1.style.height = '5px';
+            arm1.style.background = color;
+            arm1.style.left = '5px';
+            arm1.style.top = '25px';
+            figure.appendChild(arm1);
+            
+            const arm2 = document.createElement('div');
+            arm2.style.position = 'absolute';
+            arm2.style.width = '20px';
+            arm2.style.height = '5px';
+            arm2.style.background = color;
+            arm2.style.left = '25px';
+            arm2.style.top = '25px';
+            figure.appendChild(arm2);
+            
+            // 腿
+            const leg1 = document.createElement('div');
+            leg1.style.position = 'absolute';
+            leg1.style.width = '5px';
+            leg1.style.height = '25px';
+            leg1.style.background = color;
+            leg1.style.left = '20px';
+            leg1.style.top = '50px';
+            figure.appendChild(leg1);
+            
+            const leg2 = document.createElement('div');
+            leg2.style.position = 'absolute';
+            leg2.style.width = '5px';
+            leg2.style.height = '25px';
+            leg2.style.background = color;
+            leg2.style.left = '25px';
+            leg2.style.top = '50px';
+            figure.appendChild(leg2);
+            
+            return figure;
+        }
+        
+        // 初始化
+        function init() {
+            createBuildings();
+            
+            const runner = createStickFigure(200, '30%', '#0000FF');
+            runner.id = 'runner';
+            document.body.appendChild(runner);
+            
+            const chaser = createStickFigure(400, '30%', '#FF0000');
+            chaser.id = 'chaser';
+            document.body.appendChild(chaser);
+            
+            // 动画
+            let runnerX = 200;
+            let chaserX = 400;
+            
+            function animate() {
+                runnerX += 2;
+                chaserX += 2.5;
+                
+                if (runnerX > window.innerWidth) {
+                    runnerX = -50;
+                }
+                
+                if (chaserX > window.innerWidth) {
+                    chaserX = -50;
+                }
+                
+                document.getElementById('runner').style.left = runnerX + 'px';
+                document.getElementById('chaser').style.left = chaserX + 'px';
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>
